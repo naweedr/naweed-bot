@@ -1,0 +1,2 @@
+# naweed-bot
+musicbot
