@@ -36,7 +36,7 @@ opts = {
     "nooverwrites": True,
     "keepvideo": False,
     "noplaylist": True,
-    "skip_download": False,
+    "skip_download": True,
     "prefer_ffmpeg": True
 }  # youtube_dl options
 beforeOps = "-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5"
@@ -78,9 +78,9 @@ async def background_player(msg,song):
         players[msg.message.server.id] = {
             "stream": await voice_client.create_ytdl_player(url=song, ytdl_options=opts, before_options=beforeOps, after=lambda: bot.loop.create_task(player_control(msg.message.server))),
             "songs": [],
-            "status": False,
+            "status": True,
             "message": None,
-            "volume":1
+            "volume":0.75
         }
         emb = discord.Embed(title=song_pack['items'][0]['snippet']['title'],
                             url="https://www.youtube.com/watch?v={}".format(song_pack['items'][0]['id']['videoId']))
@@ -166,7 +166,7 @@ async def leave(msg):
         await bot.voice_client_in(msg.message.server).disconnect()
         players[msg.message.server.id]['stream']=None
         players[msg.message.server.id]['songs'].clear()
-        players[msg.message.server.id]['status']=False
+        players[msg.message.server.id]['status']=True
         players[msg.message.server.id]['message'] = None
 
     if msg.message.author.voice_channel == bot.user.voice_channel:
@@ -217,7 +217,7 @@ async def resume(msg):
     """
     if msg.message.server.id in players:
         if players[msg.message.server.id]['stream'] !=None:
-            if players[msg.message.server.id]['status'] == False:
+            if players[msg.message.server.id]['status'] == True:
                 await bot.say("Audio already playing")
             
             if players[msg.message.server.id]['status'] == True:
